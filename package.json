@@ -1,0 +1,29 @@
+{
+  "name": "playstore-screenshot-maker",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Free. Fast. Frame your store screenshots in seconds.",
+  "scripts": {
+    "frames": "node scripts/fetch-frames.mjs",
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "smoke": "npm run build && node scripts/smoke.mjs"
+  },
+  "dependencies": {
+    "@fontsource/montserrat": "^5.1.1",
+    "file-saver": "^2.0.5",
+    "jszip": "^3.10.1"
+  },
+  "devDependencies": {
+    "@types/file-saver": "^2.0.7",
+    "puppeteer-core": "^25.8.0",
+    "sharp": "^0.33.5",
+    "typescript": "^5.6.3",
+    "vite": "^6.0.7",
+    "vitest": "^2.1.8"
+  }
+}

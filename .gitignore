@@ -1,0 +1,7 @@
+node_modules
+dist
+*.local
+.DS_Store
+src/generated/frames-catalog.ts
+public/frames/
+probe.png

@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PlayStoreScreenshotMaker — Free. Fast. Frame your store screenshots in seconds.</title>
+    <meta
+      name="description"
+      content="PlayStoreScreenshotMaker is a free, fast browser tool that turns your screenshots into device-framed Play Store screenshots. Upload, frame, download — all on-device, no uploads."
+    />
+    <meta name="theme-color" content="#141633" />
+    <meta name="color-scheme" content="dark light" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="PlayStoreScreenshotMaker" />
+    <meta property="og:title" content="PlayStoreScreenshotMaker" />
+    <meta
+      property="og:description"
+      content="Free. Fast. Frame your store screenshots in seconds. 100% in-browser, 2160×3840 Play Store screenshots with authentic device frames."
+    />
+    <meta property="og:image" content="/playstore-screenshot-maker/og-image.png" />
+    <meta property="og:url" content="https://lowkeygud.github.io/playstore-screenshot-maker/" />
+
+    <link rel="icon" type="image/svg+xml" href="/playstore-screenshot-maker/favicon.svg" />
+    <link rel="preload" as="image" href="/playstore-screenshot-maker/favicon.svg" />
+  </head>
+  <body>
+    <div id="app" class="app">
+      <header class="site-header glass" data-zone="header">
+        <div class="brand">
+          <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true">
+            <rect x="6" y="2" width="28" height="36" rx="5" fill="none" stroke="currentColor" stroke-width="2.4" />
+            <rect x="11" y="7" width="18" height="26" rx="1.6" fill="currentColor" opacity="0.85" />
+            <circle cx="28" cy="31" r="1.7" fill="var(--bg)" />
+          </svg>
+          <div class="brand-text">
+            <h1>PlayStore<span>ScreenshotMaker</span></h1>
+            <p class="tagline">Free. Fast. Frame your store screenshots in seconds.</p>
+          </div>
+        </div>
+        <div class="header-actions">
+          <button class="icon-btn" id="about-open" type="button" aria-label="About" title="About">
+            <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+              <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8" />
+              <path d="M12 11v5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+              <circle cx="12" cy="8" r="0.6" fill="currentColor" />
+            </svg>
+          </button>
+          <button class="icon-btn" id="theme-toggle" type="button" aria-label="Toggle light/dark theme" title="Toggle theme (T)"></button>
+        </div>
+      </header>
+
+      <main>
+        <!-- Step 1: Upload -->
+        <section class="card glass" data-zone="uploads" id="uploads-zone" aria-labelledby="uploads-title">
+          <div class="card-head">
+            <h2 id="uploads-title"><span class="step">1</span>Add screenshots</h2>
+            <p class="hint">PNG or JPEG, any size. They never leave your device.</p>
+          </div>
+
+          <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Upload screenshots">
+            <svg viewBox="0 0 24 24" class="dz-icon" aria-hidden="true">
+              <path d="M12 16V4m0 0l-4 4m4-4l4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M4 15v3a2 2 0 002 2h12a2 2 0 002-2v-3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+            </svg>
+            <p class="dz-title">Drop screenshots here</p>
+            <p class="dz-sub">or <button class="link-btn" id="pick-files" type="button">browse your files</button></p>
+            <input id="file-input" type="file" accept="image/png,image/jpeg,image/webp" multiple hidden />
+          </div>
+
+          <div class="thumbbar" id="thumbbar" hidden>
+            <div class="thumbbar-head">
+              <span class="thumb-count" id="thumb-count">0 screenshots</span>
+              <button class="chip chip-danger" id="clear-all" type="button">Clear all</button>
+            </div>
+            <div class="thumbs" id="thumbs" role="listbox" aria-label="Uploaded screenshots" aria-multiselectable="true"></div>
+            <p class="thumbbar-tip">Click to select · Space toggles · Ctrl/Cmd+Z undoes</p>
+          </div>
+        </section>
+
+        <!-- Step 2: Device -->
+        <section class="card glass" data-zone="devices" id="devices-zone" aria-labelledby="devices-title">
+          <div class="card-head">
+            <h2 id="devices-title"><span class="step">2</span>Pick a device</h2>
+            <p class="hint">Choose one or several frames. Variants load on demand.</p>
+          </div>
+          <div id="device-picker" class="device-picker" aria-label="Device frames"></div>
+        </section>
+
+        <!-- Step 3: Background -->
+        <section class="card glass" data-zone="bg" id="bg-zone" aria-labelledby="bg-title">
+          <div class="card-head">
+            <h2 id="bg-title"><span class="step">3</span>Background</h2>
+            <p class="hint">Solid, gradient, or your own image behind the device.</p>
+          </div>
+          <div id="bg-editor" class="bg-editor"></div>
+        </section>
+
+        <!-- Step 4: Previews + export -->
+        <section class="card glass" data-zone="preview" id="preview-zone" aria-labelledby="preview-title">
+          <div class="card-head">
+            <h2 id="preview-title"><span class="step">4</span>Previews</h2>
+            <p class="hint">Real composites, rendered locally. Click any tile to zoom.</p>
+          </div>
+          <div id="preview-grid" class="preview-grid" aria-live="polite"></div>
+        </section>
+
+        <section class="export-bar glass" id="export-bar" hidden aria-labelledby="export-title">
+          <div class="export-info">
+            <strong id="export-title">Ready to export</strong>
+            <span id="export-meta"></span>
+          </div>
+          <div class="export-actions">
+            <button class="btn btn-ghost" id="download-single" type="button">Download PNG</button>
+            <button class="btn btn-primary" id="download-zip" type="button">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M7 17l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M12 22V9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+                <path d="M4 13H3a2 2 0 01-2-2V5a2 2 0 012-2h18a2 2 0 012 2v6a2 2 0 01-2 2h-1" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+              </svg>
+              Download all as ZIP
+            </button>
+          </div>
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        <p>
+          Built by <a href="https://github.com/lowkeygud" target="_blank" rel="noopener noreferrer">@lowkeygud</a> ·
+          <button class="link-btn" id="about-link" type="button" style="text-decoration:none">About</button> ·
+          Device frame artwork from the
+          <a href="https://github.com/jonnyjackson26/device-frames-media" target="_blank" rel="noopener noreferrer">open-source device-frames-media pack</a>
+          by <a href="https://github.com/jonnyjackson26" target="_blank" rel="noopener noreferrer">@jonnyjackson26</a>
+        </p>
+        <p class="foot-sub">All processing happens in your browser. No uploads, no tracking.</p>
+      </footer>
+    </div>
+
+    <!-- About modal -->
+    <div class="modal" id="about-modal" hidden role="dialog" aria-modal="true" aria-labelledby="about-title">
+      <div class="modal-card glass">
+        <button class="icon-btn modal-close" id="about-close" type="button" aria-label="Close about">×</button>
+        <h2 id="about-title">PlayStoreScreenshotMaker</h2>
+        <p class="about-tag">Free. Fast. Frame your store screenshots in seconds.</p>
+        <p>
+          Turn your screenshots into device-framed Play Store screenshots at 2160×3840, entirely in
+          your browser. Upload screenshots, pick a device and background, preview every combination,
+          then export individual PNGs or a single ZIP.
+        </p>
+        <ul class="about-features">
+          <li>145 device frames — iPhones, iPads, Pixels, Galaxy phones &amp; tablets</li>
+          <li>Pixel-perfect compositing: cover-crop + mask clip + authentic frame overlay</li>
+          <li>Editable solid / gradient / image backgrounds</li>
+          <li>Worker-based batch export that never janks the UI</li>
+        </ul>
+        <h3>Keyboard shortcuts</h3>
+        <ul class="about-features">
+          <li><kbd>Space</kbd> toggle selection of the focused thumbnail or device</li>
+          <li><kbd>Ctrl/Cmd</kbd> + <kbd>Z</kbd> undo</li>
+          <li><kbd>A</kbd> select all · <kbd>T</kbd> toggle theme · <kbd>Esc</kbd> close</li>
+          <li><kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd> navigate grids</li>
+        </ul>
+        <h3>Credits</h3>
+        <p class="about-credits">
+          Created by <a href="https://github.com/lowkeygud" target="_blank" rel="noopener noreferrer">@lowkeygud</a>.
+          Device frame artwork from the open-source
+          <a href="https://github.com/jonnyjackson26/device-frames-media" target="_blank" rel="noopener noreferrer">device-frames-media pack</a>
+          by <a href="https://github.com/jonnyjackson26" target="_blank" rel="noopener noreferrer">@jonnyjackson26</a>.
+        </p>
+      </div>
+    </div>
+
+    <!-- Lightbox -->
+    <div class="lightbox" id="lightbox" hidden role="dialog" aria-modal="true" aria-label="Preview close-up">
+      <button class="icon-btn lightbox-close" id="lightbox-close" type="button" aria-label="Close preview">×</button>
+      <div class="lightbox-frame" id="lightbox-frame"></div>
+      <p class="lightbox-caption" id="lightbox-caption"></p>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+    <noscript>
+      <p style="padding: 2rem; text-align: center; font-family: sans-serif">
+        PlayStoreScreenshotMaker needs JavaScript enabled to run entirely in your browser.
+      </p>
+    </noscript>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

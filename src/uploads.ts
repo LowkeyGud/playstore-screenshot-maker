@@ -14,10 +14,19 @@ export function initUploads() {
   const dz = dropzone()
   const input = fileInput()
 
+  // A single user gesture must trigger input.click() exactly ONCE.
+  // The input is nested inside #dropzone, so its own click() would bubble back
+  // up to the dropzone's click handler and re-fire. Two synchronous click()
+  // calls make Chromium suppress the file dialog entirely. stopPropagation
+  // (both here and on the input itself) prevents that recursion cleanly.
   const openPicker = (e?: Event) => {
     e?.preventDefault()
+    e?.stopPropagation()
     input.click()
   }
+  // Stop the file input's own click event from bubbling into the dropzone handler.
+  input.addEventListener('click', (e) => e.stopPropagation())
+
   document.getElementById('pick-files')!.addEventListener('click', openPicker)
   dz.addEventListener('click', openPicker)
   dz.addEventListener('keydown', (e) => {

@@ -29,7 +29,7 @@
     <div id="app" class="app">
       <header class="site-header glass" data-zone="header">
         <div class="brand">
-          <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true">
+          <svg class="brand-mark" viewBox="0 0 40 40" width="42" height="42" aria-hidden="true">
             <rect x="6" y="2" width="28" height="36" rx="5" fill="none" stroke="currentColor" stroke-width="2.4" />
             <rect x="11" y="7" width="18" height="26" rx="1.6" fill="currentColor" opacity="0.85" />
             <circle cx="28" cy="31" r="1.7" fill="var(--bg)" />
@@ -60,7 +60,7 @@
           </div>
 
           <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Upload screenshots">
-            <svg viewBox="0 0 24 24" class="dz-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" class="dz-icon" width="40" height="40" aria-hidden="true">
               <path d="M12 16V4m0 0l-4 4m4-4l4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
               <path d="M4 15v3a2 2 0 002 2h12a2 2 0 002-2v-3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
             </svg>
@@ -97,10 +97,19 @@
           <div id="bg-editor" class="bg-editor"></div>
         </section>
 
-        <!-- Step 4: Previews + export -->
+        <!-- Device shadow -->
+        <section class="card glass" data-zone="shadow" id="shadow-zone" aria-labelledby="shadow-title">
+          <div class="card-head">
+            <h2 id="shadow-title"><span class="step">4</span>Device shadow</h2>
+            <p class="hint">A soft drop shadow behind the device. Toggle or fine-tune it.</p>
+          </div>
+          <div id="shadow-editor" class="shadow-editor"></div>
+        </section>
+
+        <!-- Step 5: Previews + export -->
         <section class="card glass" data-zone="preview" id="preview-zone" aria-labelledby="preview-title">
           <div class="card-head">
-            <h2 id="preview-title"><span class="step">4</span>Previews</h2>
+            <h2 id="preview-title"><span class="step">5</span>Previews</h2>
             <p class="hint">Real composites, rendered locally. Click any tile to zoom.</p>
           </div>
           <div id="preview-grid" class="preview-grid" aria-live="polite"></div>
@@ -114,7 +123,7 @@
           <div class="export-actions">
             <button class="btn btn-ghost" id="download-single" type="button">Download PNG</button>
             <button class="btn btn-primary" id="download-zip" type="button">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
                 <path d="M7 17l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
                 <path d="M12 22V9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
                 <path d="M4 13H3a2 2 0 01-2-2V5a2 2 0 012-2h18a2 2 0 012 2v6a2 2 0 01-2 2h-1" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
@@ -152,6 +161,7 @@
           <li>145 device frames — iPhones, iPads, Pixels, Galaxy phones &amp; tablets</li>
           <li>Pixel-perfect compositing: cover-crop + mask clip + authentic frame overlay</li>
           <li>Editable solid / gradient / image backgrounds</li>
+          <li>Adjustable drop shadow behind the device (toggle, strength, blur, offset)</li>
           <li>Worker-based batch export that never janks the UI</li>
         </ul>
         <h3>Keyboard shortcuts</h3>

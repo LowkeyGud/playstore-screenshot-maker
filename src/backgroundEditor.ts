@@ -16,7 +16,7 @@ const GRADIENTS: { label: string; angle: number; stops: { color: string; pos: nu
 
 const editorEl = () => document.getElementById('bg-editor') as HTMLDivElement
 
-type Tab = 'solid' | 'gradient' | 'image'
+type Tab = 'solid' | 'gradient' | 'image' | 'transparent'
 
 let currentTab: Tab = tabOf(store.get().background)
 
@@ -59,11 +59,11 @@ function render() {
 
   const tabs = document.createElement('div')
   tabs.className = 'bg-tabs'
-  ;(['solid', 'gradient', 'image'] as Tab[]).forEach((t) => {
+  ;(['solid', 'gradient', 'image', 'transparent'] as Tab[]).forEach((t) => {
     const b = document.createElement('button')
     b.type = 'button'
     b.className = 'bg-tab' + (t === currentTab ? ' active' : '')
-    b.textContent = t === 'solid' ? 'Solid' : t === 'gradient' ? 'Gradient' : 'Image'
+    b.textContent = t === 'solid' ? 'Solid' : t === 'gradient' ? 'Gradient' : t === 'image' ? 'Image' : 'Transparent'
     b.addEventListener('click', () => {
       currentTab = t
       render()
@@ -81,7 +81,8 @@ function render() {
 function renderTab(tab: Tab): HTMLElement {
   if (tab === 'solid') return renderSolid()
   if (tab === 'gradient') return renderGradient()
-  return renderImage()
+  if (tab === 'image') return renderImage()
+  return renderTransparent()
 }
 
 function renderSolid(): HTMLElement {
@@ -113,6 +114,29 @@ function renderSolid(): HTMLElement {
   presets.appendChild(picker)
 
   wrap.appendChild(presets)
+  return wrap
+}
+
+function renderTransparent(): HTMLElement {
+  const wrap = document.createElement('div')
+  wrap.className = 'bg-controls'
+  const isActive = store.get().background.kind === 'transparent'
+
+  const hint = document.createElement('p')
+  hint.className = 'bg-hint'
+  hint.textContent = 'Export with a transparent backdrop (PNG), ideal for overlays or store-builder templates.'
+  wrap.appendChild(hint)
+
+  const row = document.createElement('div')
+  row.className = 'swatches'
+  const sw = document.createElement('button')
+  sw.type = 'button'
+  sw.className = 'swatch swatch-transparent' + (isActive ? ' active' : '')
+  sw.title = 'Transparent'
+  sw.setAttribute('aria-label', 'Transparent background')
+  sw.addEventListener('click', () => setBg({ kind: 'transparent' }))
+  row.appendChild(sw)
+  wrap.appendChild(row)
   return wrap
 }
 

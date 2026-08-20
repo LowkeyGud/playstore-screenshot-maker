@@ -62,7 +62,7 @@ self.onmessage = async (e: MessageEvent<WorkerRequest>) => {
         background: { kind: 'solid', color: '#000000' },
       })
 
-      const exportCanvas = await compositor.composeExport(device, frameVariant, job.background, backgroundImage)
+      const exportCanvas = await compositor.composeExport(device, frameVariant, job.background, backgroundImage, undefined, job.shadow)
       const blob = await canvasToBlob(exportCanvas)
       const bytes = await blob.arrayBuffer()
 

@@ -1,7 +1,7 @@
 import { Compositor, getCtx } from './compositor/pipeline'
 import { loadFrameAsset, getFrameGroups } from './frames'
 import { store } from './state'
-import type { FrameAsset, Screenshot } from './types'
+import type { Ctx2D, FrameAsset, Screenshot } from './types'
 
 const LB_W = 1080
 const LB_H = 1920
@@ -55,10 +55,11 @@ export async function openLightbox(screenshot: Screenshot, frameKey: string, dev
       screenshot: await fetchBitmap(screenshot.url),
       background: { kind: 'solid', color: '#000000' },
     })
-    const out = await compositor.composeExport(device, variant, bg, bgImage, { width: LB_W, height: LB_H })
+    const out = await compositor.composeExport(device, variant, bg, bgImage, { width: LB_W, height: LB_H }, store.get().shadow)
     if (g !== gen) return
     const ctx = getCtx(canvas)
     ctx.imageSmoothingQuality = 'high'
+    if (bg.kind === 'transparent') drawChecker(ctx, LB_W, LB_H)
     ctx.drawImage(out as CanvasImageSource, 0, 0, LB_W, LB_H)
   } catch {
     frameEl().textContent = 'Could not render preview'
@@ -74,6 +75,18 @@ function close() {
   lightboxEl().classList.remove('show')
   window.setTimeout(() => (lightboxEl().hidden = true), 220)
   document.body.classList.remove('no-scroll')
+}
+
+function drawChecker(ctx: Ctx2D, w: number, h: number) {
+  const a = '#23264a'
+  const b = '#2e3159'
+  const s = 16
+  for (let y = 0; y < h; y += s) {
+    for (let x = 0; x < w; x += s) {
+      ctx.fillStyle = (Math.floor(x / s) + Math.floor(y / s)) % 2 === 0 ? a : b
+      ctx.fillRect(x, y, s, s)
+    }
+  }
 }
 
 function shortName(name: string): string {

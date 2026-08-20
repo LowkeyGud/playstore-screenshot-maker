@@ -75,15 +75,12 @@ async function main() {
   await page.waitForSelector('.thumb', { timeout: 8000 })
   console.log('screenshot uploaded, thumb rendered')
 
-  // 4. pick a device: click the Pixel 8 chip (first android chip)
-  await page.evaluate(() => {
-    const chips = document.querySelectorAll('.dp-group .chip')
-    for (const c of chips) {
-      if (c.dataset.modelKey === 'pixel-8') { c.click(); break }
-    }
-  })
+  // 4. pick a device: REAL mouse click on the Pixel 8 chip
+  const chip = await page.$('.dp-group .chip[data-model-key="pixel-8"]')
+  if (!chip) throw new Error('pixel-8 chip not found')
+  await chip.click()
   await page.waitForSelector('.cell', { timeout: 8000 })
-  console.log('device selected, preview cell created')
+  console.log('device selected via real click, preview cell created')
 
   // 5. wait for a rendered preview and verify it drew real pixels
   await page.waitForSelector('.cell.rendered', { timeout: 25000 })
@@ -106,7 +103,7 @@ async function main() {
   const client = await page.createCDPSession()
   await client.send('Browser.setDownloadBehavior', { behavior: 'allow', downloadPath: dlDir })
   await client.send('Page.setDownloadBehavior', { behavior: 'allow', downloadPath: dlDir })
-  await page.evaluate(() => document.getElementById('download-zip').click())
+  await page.click('#download-zip')
   let prev = ''
   for (let i = 0; i < 10; i++) {
     const t = await page.evaluate(() => document.getElementById('export-title')?.textContent)

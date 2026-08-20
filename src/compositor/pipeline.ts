@@ -1,7 +1,9 @@
 import { EXPORT_HEIGHT, EXPORT_WIDTH } from '../types'
-import type { BackgroundSpec, CanvasLike, Ctx2D, FrameAsset } from '../types'
+import type { BackgroundSpec, CanvasLike, Ctx2D, FrameAsset, ShadowSpec } from '../types'
 import type { FrameVariant } from '../generated/frames-catalog'
 import { coverRect, fitRect } from '../util'
+
+export const DEFAULT_SHADOW: ShadowSpec = { enabled: true, alpha: 0.45, blur: 0.03, offsetY: 0.012 }
 
 export type ScreenshotSource = ImageBitmap | CanvasLike | HTMLImageElement
 
@@ -11,6 +13,7 @@ export interface StageMeta {
   screenshot: ScreenshotSource
   background: BackgroundSpec
   backgroundImage?: ImageBitmap | CanvasLike
+  shadow?: ShadowSpec
 }
 
 export interface PipelineStage {
@@ -87,7 +90,9 @@ class BackgroundStage implements PipelineStage {
   apply(canvas: CanvasLike, ctx: Ctx2D, meta: StageMeta): void {
     const { background, backgroundImage } = meta
     ctx.clearRect(0, 0, canvas.width, canvas.height)
-    if (background.kind === 'solid') {
+    if (background.kind === 'transparent') {
+      return // leave transparent
+    } else if (background.kind === 'solid') {
       ctx.fillStyle = background.color
       ctx.fillRect(0, 0, canvas.width, canvas.height)
     } else if (background.kind === 'gradient') {
@@ -122,7 +127,7 @@ class FitDeviceStage implements PipelineStage {
   apply(canvas: CanvasLike, ctx: Ctx2D, meta: StageMeta): void {
     const device = meta.screenshot as CanvasLike
     const f = fitRect(device.width, device.height, canvas.width, canvas.height)
-    const shadowBlur = Math.max(24, f.dw * 0.03)
+    const shadow = meta.shadow ?? DEFAULT_SHADOW
 
     // ambient glow behind the device
     const glow = ctx.createRadialGradient(
@@ -138,14 +143,22 @@ class FitDeviceStage implements PipelineStage {
     ctx.fillStyle = glow
     ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-    // soft drop shadow behind the device body
-    ctx.save()
-    ctx.filter = `blur(${shadowBlur}px)`
-    ctx.globalAlpha = 0.45
-    ctx.fillStyle = '#000000'
-    const s = roundRectPath(f.dx + shadowBlur * 0.4, f.dy + shadowBlur * 0.8, f.dw, f.dh, f.dw * 0.11)
-    ctx.fill(s)
-    ctx.restore()
+    // drop shadow behind the device body (user-controlled)
+    if (shadow.enabled && shadow.alpha > 0 && shadow.blur > 0) {
+      ctx.save()
+      ctx.filter = `blur(${f.dw * shadow.blur}px)`
+      ctx.globalAlpha = shadow.alpha
+      ctx.fillStyle = '#000000'
+      const s = roundRectPath(
+        f.dx + f.dw * 0.02,
+        f.dy + f.dh * shadow.offsetY,
+        f.dw,
+        f.dh,
+        f.dw * 0.11,
+      )
+      ctx.fill(s)
+      ctx.restore()
+    }
 
     // the device
     ctx.drawImage(device as CanvasImageSource, f.dx, f.dy, f.dw, f.dh)
@@ -234,6 +247,7 @@ export class Compositor {
     background: BackgroundSpec,
     backgroundImage?: ImageBitmap | CanvasLike,
     dims: { width: number; height: number } = { width: EXPORT_WIDTH, height: EXPORT_HEIGHT },
+    shadow: ShadowSpec = DEFAULT_SHADOW,
   ): Promise<CanvasLike> {
     const canvas = createCanvas(dims.width, dims.height)
     const ctx = getCtx(canvas)
@@ -242,6 +256,7 @@ export class Compositor {
       screenshot: deviceCanvas,
       background,
       backgroundImage,
+      shadow,
     }
     for (const stage of this.exportStages) await stage.apply(canvas, ctx, meta)
     return canvas

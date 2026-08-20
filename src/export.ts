@@ -35,6 +35,7 @@ export function buildJobs(): ExportJob[] {
         screen: d.variant.screen,
         frameSize: d.variant.frameSize,
         background: state.background,
+        shadow: state.shadow,
       })
     }
   }

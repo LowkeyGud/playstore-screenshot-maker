@@ -8,7 +8,7 @@ Free. Fast. Frame your store screenshots in seconds. A 100% client-side web tool
 
 1. **Upload** screenshots (drag & drop or browse).
 2. **Pick a device** (145 frames across iPhones, iPads, Pixels, Galaxy phones & tablets) and a color variant.
-3. **Choose a background** — solid, gradient, or your own image.
+3. **Choose a background** — solid, gradient, or your own image — and tune the device drop shadow (on/off, strength, blur, offset).
 4. **Preview** every device × screenshot combination, click any tile to zoom.
 5. **Export** individual PNGs or a single ZIP (2160×3840 each).
 

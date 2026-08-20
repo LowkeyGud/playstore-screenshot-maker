@@ -1,4 +1,4 @@
-import type { BackgroundSpec, ChosenDevice, Screenshot } from './types'
+import type { BackgroundSpec, ChosenDevice, Screenshot, ShadowSpec } from './types'
 import { FRAME_GROUPS } from './generated/frames-catalog'
 
 type Theme = 'dark' | 'light'
@@ -10,6 +10,7 @@ export interface AppState {
   lastSelection: Set<string>
   devices: ChosenDevice[]
   background: BackgroundSpec
+  shadow: ShadowSpec
   exporting: boolean
   progress: { done: number; total: number; current: string } | null
 }
@@ -23,6 +24,7 @@ const initialState: AppState = {
   lastSelection: new Set(),
   devices: [],
   background: { kind: 'gradient', angle: 160, stops: [{ color: '#0f1128', pos: 0 }, { color: '#1d2148', pos: 1 }] },
+  shadow: { enabled: true, alpha: 0.45, blur: 0.03, offsetY: 0.012 },
   exporting: false,
   progress: null,
 }
@@ -121,6 +123,10 @@ class Store {
 
   setBackground(background: BackgroundSpec) {
     this.set({ background })
+  }
+
+  setShadow(shadow: ShadowSpec) {
+    this.set({ shadow })
   }
 
   setTheme(theme: Theme) {

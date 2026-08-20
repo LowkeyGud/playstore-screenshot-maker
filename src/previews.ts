@@ -1,7 +1,7 @@
 import { store } from './state'
 import { Compositor, getCtx } from './compositor/pipeline'
 import { loadFrameAsset, getFrameGroups } from './frames'
-import type { FrameAsset, Screenshot } from './types'
+import type { Ctx2D, FrameAsset, Screenshot } from './types'
 import { openLightbox } from './lightbox'
 
 const PREVIEW_W = 396
@@ -149,11 +149,25 @@ async function renderCell(cell: Cell): Promise<void> {
     store.get().background,
     backgroundImage,
     { width: PREVIEW_W, height: PREVIEW_H },
+    store.get().shadow,
   )
   const ctx = getCtx(cell.tile)
   ctx.imageSmoothingQuality = 'high'
+  if (store.get().background.kind === 'transparent') drawChecker(ctx, PREVIEW_W, PREVIEW_H)
   ctx.drawImage(preview as CanvasImageSource, 0, 0, PREVIEW_W, PREVIEW_H)
   cell.el.classList.add('rendered')
+}
+
+function drawChecker(ctx: Ctx2D, w: number, h: number) {
+  const a = '#23264a'
+  const b = '#2e3159'
+  const s = 12
+  for (let y = 0; y < h; y += s) {
+    for (let x = 0; x < w; x += s) {
+      ctx.fillStyle = (Math.floor(x / s) + Math.floor(y / s)) % 2 === 0 ? a : b
+      ctx.fillRect(x, y, s, s)
+    }
+  }
 }
 
 let bgImageCache: { url: string; bitmap: ImageBitmap } | null = null

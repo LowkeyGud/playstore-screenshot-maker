@@ -18,6 +18,18 @@ export type BackgroundSpec =
   | { kind: 'solid'; color: string }
   | { kind: 'gradient'; angle: number; stops: { color: string; pos: number }[] }
   | { kind: 'image'; url: string }
+  | { kind: 'transparent' }
+
+/** Drop shadow behind the framed device. */
+export interface ShadowSpec {
+  enabled: boolean
+  /** alpha of the shadow, 0..1 */
+  alpha: number
+  /** blur as a fraction of device width, 0..0.15 */
+  blur: number
+  /** vertical offset as a fraction of device height, -0.06..0.1 */
+  offsetY: number
+}
 
 export interface ChosenDevice {
   variant: FrameVariant
@@ -46,6 +58,7 @@ export type ExportJob = {
   screen: { x: number; y: number; width: number; height: number }
   frameSize: { width: number; height: number }
   background: BackgroundSpec
+  shadow: ShadowSpec
 }
 
 export type ExportProgress = { done: number; total: number; current: string }

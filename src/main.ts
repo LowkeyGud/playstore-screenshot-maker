@@ -11,6 +11,7 @@ import { initKeyboard } from './keyboard'
 import { initUploads } from './uploads'
 import { initDevicePicker } from './devicePicker'
 import { initBackgroundEditor } from './backgroundEditor'
+import { initShadowEditor } from './shadowEditor'
 import { initPreviews } from './previews'
 import { initLightbox } from './lightbox'
 import { downloadSingle, downloadZip } from './export'
@@ -97,6 +98,7 @@ function boot() {
   initUploads()
   initDevicePicker()
   initBackgroundEditor()
+  initShadowEditor()
   initPreviews()
   initLightbox()
   initExportBar()

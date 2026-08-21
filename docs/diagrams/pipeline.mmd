@@ -1,0 +1,9 @@
+%%{init: {"theme": "default"}}%%
+flowchart TD
+  UP["Upload screenshots<br/>never leave the device"] --> PICK["Device picker<br/>145+ frames on demand"]
+  PICK --> BG["Background editor<br/>solid gradient image transparent"]
+  BG --> SHADOW["Shadow editor<br/>strength blur offset"]
+  SHADOW --> PIPE["Compositor pipeline"]
+  PIPE --> WORKER["Web Worker<br/>off-thread render"]
+  WORKER --> PREV["Previews + lightbox<br/>zoom tiles"]
+  PREV --> EXP["Export PNG 2160x3840<br/>+ ZIP batch"]
